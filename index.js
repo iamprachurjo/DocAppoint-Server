@@ -1,10 +1,14 @@
 const express = require("express");
-require('dotenv').config();
+require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = process.env.MONGODB_URI;
 const app = express();
+const cors = require('cors')
 
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
+
+app.use(cors());
+app.use(express.json());
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -16,8 +20,19 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    // DB creation
+    const db = client.db("Prescripto");
+    const doctorsCollection = db.collection("doctors");
+
+    // crete function added
+    app.post('/doctors', async(req, res) => {
+      const doctorData = req.body;
+      const result = await doctorsCollection.insertOne(doctorData)
+      res.json(result)
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
