@@ -26,10 +26,16 @@ async function run() {
     const db = client.db("Prescripto");
     const doctorsCollection = db.collection("doctors");
 
-    // crete function added
+    // create function added
     app.post('/doctors', async(req, res) => {
       const doctorData = req.body;
       const result = await doctorsCollection.insertOne(doctorData)
+      res.json(result)
+    })
+
+    // Get/read doctors from api
+    app.get('/doctors', async(req, res) =>{
+      const result = await doctorsCollection.find().toArray()
       res.json(result)
     })
 
