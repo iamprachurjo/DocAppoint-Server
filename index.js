@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri = process.env.MONGODB_URI;
 const app = express();
 const cors = require('cors')
@@ -36,6 +36,13 @@ async function run() {
     // Get/read doctors from api
     app.get('/doctors', async(req, res) =>{
       const result = await doctorsCollection.find().toArray()
+      res.json(result)
+    })
+
+    // Get Single doctor data
+    app.get('/appointments/:id', async(req, res) => {
+      const {id} = req.params;
+      const result = await doctorsCollection.findOne({_id: new ObjectId(id)})
       res.json(result)
     })
 
